@@ -2,20 +2,19 @@
 
 This repository contains hands-on labs for learning about Azure Kubernetes Service (AKS) volumes and persistent storage. These labs are designed to provide practical experience with various storage solutions in AKS.
 
+Each lab is available in two versions:
+
+- **Bash** – Uses YAML files and shell commands (root folder)
+- **PowerShell** – Uses inline here-strings (`@"..."@ | kubectl apply -f -`) for copy-and-paste convenience ([psversion/](./psversion/) folder)
+
 ## Labs Overview
+
+### Bash Version
 
 1. **[Lab 1: Prerequisites and AKS Setup](./lab1-aks-setup.md)**
    - Setting up resource group and AKS cluster
    - Configuring cluster credentials
    - Basic cluster verification
-
-    1.1 **[Lab 1.1: AKS-Fundamentals](./lab1-1-AKS-Fundamentals.md)**
-   - Deployments** – Creating, updating, rolling back, and managing deployment strategies
-   - Services – Exposing workloads via ClusterIP, NodePort, and Internal LoadBalancer
-   - Blue/Green Deployments – Zero-downtime releases by switching traffic between versions
-   - Canary Deployments – Gradually rolling out a new version alongside the existing one
-   - ConfigMaps – Externalising configuration from your containers
-   - Secrets – Storing sensitive data securely
 
 2. **[Lab 2: CSI Driver and Dynamic Provisioning](./lab2-csi-dynamic-volumes.md)**
    - Working with CSI drivers
@@ -28,6 +27,36 @@ This repository contains hands-on labs for learning about Azure Kubernetes Servi
    - Testing failover scenarios
 
 4. **[Lab 4: Blob Storage with CSI Driver](./lab4-blob-storage.md)**
+   - Using Azure Blob Storage CSI driver
+   - Block storage scenarios
+   - Performance considerations
+
+### PowerShell Version
+
+1. **[Lab 1: Prerequisites and AKS Setup](./psversion/lab1-aks-setup.md)**
+   - Setting up resource group and AKS cluster
+   - Configuring cluster credentials
+   - Basic cluster verification
+
+    1.1 **[Lab 1.1: AKS-Fundamentals](./psversion/lab1-1-AKS-Fundamentals.md)**
+   - Deployments – Creating, updating, rolling back, and managing deployment strategies
+   - Services – Exposing workloads via ClusterIP, NodePort, and Internal LoadBalancer
+   - Blue/Green Deployments – Zero-downtime releases by switching traffic between versions
+   - Canary Deployments – Gradually rolling out a new version alongside the existing one
+   - ConfigMaps – Externalising configuration from your containers
+   - Secrets – Storing sensitive data securely
+
+2. **[Lab 2: CSI Driver and Dynamic Provisioning](./psversion/lab2-csi-dynamic-volumes.md)**
+   - Working with CSI drivers
+   - Creating storage classes
+   - Dynamic volume provisioning with PVCs
+
+3. **[Lab 3: PostgreSQL with Azure Disk and Read Replicas](./psversion/lab3-postgresql-replicas.md)**
+   - Deploying PostgreSQL with persistent storage
+   - Setting up read replicas
+   - Testing failover scenarios
+
+4. **[Lab 4: Blob Storage with CSI Driver](./psversion/lab4-blob-storage.md)**
    - Using Azure Blob Storage CSI driver
    - Block storage scenarios
    - Performance considerations

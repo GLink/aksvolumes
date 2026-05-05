@@ -59,9 +59,8 @@ Key concepts covered:
 
 ### Step 1.1 – Create Your First Deployment
 
-Create a file called `deployment-v1.yaml`:
-
-```yaml
+```powershell
+@"
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -84,12 +83,7 @@ spec:
           image: nginx:1.23
           ports:
             - containerPort: 80
-```
-
-Apply it:
-
-```powershell
-kubectl apply -f deployment-v1.yaml
+"@ | kubectl apply -f -
 ```
 
 Verify the deployment:
@@ -104,9 +98,10 @@ kubectl get pods -l app=workload-1
 
 ### Step 1.2 – Trigger a Rolling Update
 
-Modify the label to simulate a template change. Create `deployment-v2.yaml`:
+Modify the label to simulate a template change:
 
-```yaml
+```powershell
+@"
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -129,10 +124,7 @@ spec:
           image: nginx:1.23
           ports:
             - containerPort: 80
-```
-
-```powershell
-kubectl apply -f deployment-v2.yaml
+"@ | kubectl apply -f -
 ```
 
 Watch the rollout:
@@ -146,9 +138,10 @@ kubectl get replicasets -l app=workload-1
 
 ### Step 1.3 – Add minReadySeconds
 
-Create `deployment-v3.yaml` adding `minReadySeconds: 15` and changing the color label to `maroon`:
+Add `minReadySeconds: 15` and change the color label to `maroon`:
 
-```yaml
+```powershell
+@"
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -172,10 +165,10 @@ spec:
           image: nginx:1.23
           ports:
             - containerPort: 80
+"@ | kubectl apply -f -
 ```
 
 ```powershell
-kubectl apply -f deployment-v3.yaml
 kubectl rollout status deployment/workload-1-dep
 ```
 
@@ -206,9 +199,10 @@ kubectl rollout undo deployment/workload-1-dep --to-revision=1
 
 ### Step 1.6 – Deploy with an Invalid Image
 
-Create `deployment-broken.yaml` with an image that doesn't exist:
+Deploy with an image that doesn't exist:
 
-```yaml
+```powershell
+@"
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -231,10 +225,10 @@ spec:
           image: nginx:1.12345
           ports:
             - containerPort: 80
+"@ | kubectl apply -f -
 ```
 
 ```powershell
-kubectl apply -f deployment-broken.yaml
 kubectl rollout status deployment/workload-1-dep
 ```
 
@@ -256,9 +250,8 @@ kubectl rollout undo deployment/workload-1-dep
 
 ### Step 1.7 – Recreate Strategy
 
-Create `deployment-recreate.yaml`:
-
-```yaml
+```powershell
+@"
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -283,10 +276,10 @@ spec:
           image: nginx:1.21
           ports:
             - containerPort: 80
+"@ | kubectl apply -f -
 ```
 
 ```powershell
-kubectl apply -f deployment-recreate.yaml
 kubectl get pods -l app=workload-1 --watch
 ```
 
@@ -294,9 +287,8 @@ kubectl get pods -l app=workload-1 --watch
 
 ### Step 1.8 – Revision History Limit
 
-Create `deployment-revision-limit.yaml`:
-
-```yaml
+```powershell
+@"
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -322,10 +314,10 @@ spec:
           image: nginx:1.23
           ports:
             - containerPort: 80
+"@ | kubectl apply -f -
 ```
 
 ```powershell
-kubectl apply -f deployment-revision-limit.yaml
 kubectl get replicasets -l app=workload-1
 ```
 
@@ -353,9 +345,8 @@ A **Service** is an abstraction that defines a logical set of Pods and a policy 
 
 ### Step 2.1 – Create the Workload
 
-Create `workload-dep.yaml`:
-
-```yaml
+```powershell
+@"
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -409,19 +400,15 @@ spec:
           valueFrom:
             fieldRef:
               fieldPath: spec.serviceAccountName
-```
-
-```powershell
-kubectl apply -f workload-dep.yaml
+"@ | kubectl apply -f -
 ```
 
 > **Explanation:** This demo app (`scubakiz/servicedemo`) displays pod info (IP, name, node) in a web page, making it easy to see which pod handles each request.
 
 ### Step 2.2 – ClusterIP Service
 
-Create `svc-clusterip.yaml`:
-
-```yaml
+```powershell
+@"
 apiVersion: v1
 kind: Service
 metadata:
@@ -435,10 +422,10 @@ spec:
     app: nginx-1
     release: prod
   type: ClusterIP
+"@ | kubectl apply -f -
 ```
 
 ```powershell
-kubectl apply -f svc-clusterip.yaml
 kubectl get svc workload-svc
 ```
 
@@ -453,9 +440,8 @@ kubectl run curl-test --image=curlimages/curl --rm -it --restart=Never -- curl h
 
 ### Step 2.3 – NodePort Service
 
-Create `svc-nodeport.yaml`:
-
-```yaml
+```powershell
+@"
 apiVersion: v1
 kind: Service
 metadata:
@@ -469,10 +455,10 @@ spec:
     app: nginx-1
     release: prod
   type: NodePort
+"@ | kubectl apply -f -
 ```
 
 ```powershell
-kubectl apply -f svc-nodeport.yaml
 kubectl get svc workload-svc
 ```
 
@@ -480,9 +466,8 @@ kubectl get svc workload-svc
 
 ### Step 2.4 – Internal LoadBalancer Service
 
-Create `svc-internal-lb.yaml`:
-
-```yaml
+```powershell
+@"
 apiVersion: v1
 kind: Service
 metadata:
@@ -498,10 +483,7 @@ spec:
     app: nginx-1
     release: prod
   type: LoadBalancer
-```
-
-```powershell
-kubectl apply -f svc-internal-lb.yaml
+"@ | kubectl apply -f -
 ```
 
 Wait for the internal IP to be assigned:
@@ -523,9 +505,10 @@ kubectl run curl-test --image=curlimages/curl --rm -it --restart=Never -- curl h
 
 ### Step 2.5 – Update Deployment and Observe Service Behaviour
 
-Create `workload-dep-update.yaml` (changes the color to red and adds `minReadySeconds`):
+Create the updated deployment (changes the color to red and adds `minReadySeconds`):
 
-```yaml
+```powershell
+@"
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -580,10 +563,7 @@ spec:
           valueFrom:
             fieldRef:
               fieldPath: spec.serviceAccountName
-```
-
-```powershell
-kubectl apply -f workload-dep-update.yaml
+"@ | kubectl apply -f -
 ```
 
 While the rollout progresses, repeatedly curl the service:
@@ -612,9 +592,8 @@ A **Blue/Green deployment** runs two identical environments (blue = current, gre
 
 ### Step 3.1 – Deploy the Blue Version
 
-Create `blue-dep.yaml`:
-
-```yaml
+```powershell
+@"
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -651,11 +630,13 @@ spec:
           valueFrom:
             fieldRef:
               fieldPath: metadata.name
+"@ | kubectl apply -f -
 ```
 
-Create `production-svc.yaml` pointing to blue:
+Create the production service pointing to blue:
 
-```yaml
+```powershell
+@"
 apiVersion: v1
 kind: Service
 metadata:
@@ -670,12 +651,10 @@ spec:
   selector:
     target: blue-dep
   type: LoadBalancer
+"@ | kubectl apply -f -
 ```
 
 ```powershell
-kubectl apply -f blue-dep.yaml
-kubectl apply -f production-svc.yaml
-
 # Wait for internal IP
 kubectl get svc production-svc --watch
 ```
@@ -690,9 +669,8 @@ kubectl run curl-test --image=curlimages/curl --rm -it --restart=Never -- curl h
 
 ### Step 3.2 – Deploy the Green Version (Without Traffic)
 
-Create `green-dep.yaml`:
-
-```yaml
+```powershell
+@"
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -729,10 +707,10 @@ spec:
           valueFrom:
             fieldRef:
               fieldPath: metadata.name
+"@ | kubectl apply -f -
 ```
 
 ```powershell
-kubectl apply -f green-dep.yaml
 kubectl get pods -l target=green-dep
 ```
 
@@ -740,9 +718,10 @@ kubectl get pods -l target=green-dep
 
 ### Step 3.3 – Switch Traffic to Green
 
-Update the service selector. Create `production-svc-green.yaml`:
+Update the service selector:
 
-```yaml
+```powershell
+@"
 apiVersion: v1
 kind: Service
 metadata:
@@ -757,10 +736,7 @@ spec:
   selector:
     target: green-dep
   type: LoadBalancer
-```
-
-```powershell
-kubectl apply -f production-svc-green.yaml
+"@ | kubectl apply -f -
 ```
 
 Test – you should now see green:
@@ -798,9 +774,8 @@ A **Canary deployment** runs a small number of new-version pods alongside the ex
 
 ### Step 4.1 – Deploy the Stable Version
 
-Create `canary-stable.yaml`:
-
-```yaml
+```powershell
+@"
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -837,11 +812,11 @@ spec:
           valueFrom:
             fieldRef:
               fieldPath: metadata.name
+"@ | kubectl apply -f -
 ```
 
-Create `canary-svc.yaml`:
-
-```yaml
+```powershell
+@"
 apiVersion: v1
 kind: Service
 metadata:
@@ -856,12 +831,10 @@ spec:
   selector:
     target: canary-pod
   type: LoadBalancer
+"@ | kubectl apply -f -
 ```
 
 ```powershell
-kubectl apply -f canary-stable.yaml
-kubectl apply -f canary-svc.yaml
-
 # Wait for internal IP
 kubectl get svc canary-svc --watch
 ```
@@ -870,9 +843,8 @@ kubectl get svc canary-svc --watch
 
 ### Step 4.2 – Deploy the Canary
 
-Create `canary-new.yaml`:
-
-```yaml
+```powershell
+@"
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -910,10 +882,10 @@ spec:
           valueFrom:
             fieldRef:
               fieldPath: metadata.name
+"@ | kubectl apply -f -
 ```
 
 ```powershell
-kubectl apply -f canary-new.yaml
 kubectl get pods -l target=canary-pod
 ```
 
@@ -961,9 +933,8 @@ A **ConfigMap** stores non-sensitive configuration data as key-value pairs. Pods
 
 ### Step 5.1 – Create ConfigMaps
 
-Create `simple-configmap.yaml`:
-
-```yaml
+```powershell
+@"
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -974,11 +945,11 @@ data:
   MD_RABBITMQ_HOST: rabbit-svc
   MD_TOPIC: "notifications"
   MY_VALUE: "555"
+"@ | kubectl apply -f -
 ```
 
-Create `simple-configmap2.yaml`:
-
-```yaml
+```powershell
+@"
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -988,11 +959,11 @@ metadata:
 data:
   player_initial_lives: "23"
   game_status: READY
+"@ | kubectl apply -f -
 ```
 
-Create `file-configmap.yaml`:
-
-```yaml
+```powershell
+@"
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -1010,12 +981,7 @@ data:
     }
   replace.sh: |-
     sed -i 's/123/456/g' app.config
-```
-
-```powershell
-kubectl apply -f simple-configmap.yaml
-kubectl apply -f simple-configmap2.yaml
-kubectl apply -f file-configmap.yaml
+"@ | kubectl apply -f -
 ```
 
 Inspect:
@@ -1027,9 +993,8 @@ kubectl describe configmap file-configmap
 
 ### Step 5.2 – Consume ConfigMaps in a Pod
 
-Create `configmap-workload.yaml`:
-
-```yaml
+```powershell
+@"
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -1075,10 +1040,7 @@ spec:
           configMap:
             defaultMode: 0744
             name: file-configmap
-```
-
-```powershell
-kubectl apply -f configmap-workload.yaml
+"@ | kubectl apply -f -
 ```
 
 ### Step 5.3 – Verify ConfigMap Consumption
@@ -1122,9 +1084,8 @@ A **Secret** is similar to a ConfigMap but designed for sensitive data (password
 
 ### Step 6.1 – Create Secrets
 
-Create `simple-secret.yaml`:
-
-```yaml
+```powershell
+@"
 apiVersion: v1
 kind: Secret
 metadata:
@@ -1135,6 +1096,7 @@ data:
   cert: RG9uJ3QgbG9vaywgSSdtIGEgc2VjcmV0
   key: dmFsdWU=
 type: Opaque
+"@ | kubectl apply -f -
 ```
 
 > **Note:** The values are base64-encoded. You can encode with PowerShell:
@@ -1142,9 +1104,8 @@ type: Opaque
 > [Convert]::ToBase64String([System.Text.Encoding]::UTF8.GetBytes("my-secret-value"))
 > ```
 
-Create `simple-secret2.yaml`:
-
-```yaml
+```powershell
+@"
 apiVersion: v1
 kind: Secret
 metadata:
@@ -1154,11 +1115,11 @@ metadata:
 data:
   dbpassword: cGFzc3dvcmQxMjM=
 type: Opaque
+"@ | kubectl apply -f -
 ```
 
-Create `file-secret.yaml`:
-
-```yaml
+```powershell
+@"
 apiVersion: v1
 kind: Secret
 metadata:
@@ -1169,12 +1130,7 @@ data:
   somevalue: VGhpcyBpcyBhIHNlY3JldCB2YWx1ZSBpbiBhIGZpbGU=
   anothervalue: VGhpcyBpcyBzb21lIG90aGVyIHN0cmluZyB0aGF0IEkgd2FudCB0byBtYWtlIGludG8gYSBzZWNyZXQ=
 type: Opaque
-```
-
-```powershell
-kubectl apply -f simple-secret.yaml
-kubectl apply -f simple-secret2.yaml
-kubectl apply -f file-secret.yaml
+"@ | kubectl apply -f -
 ```
 
 Inspect (values are hidden by default):
@@ -1192,9 +1148,8 @@ $encoded = kubectl get secret simple-secret -o jsonpath="{.data.cert}"
 
 ### Step 6.2 – Consume Secrets in a Pod
 
-Create `secret-workload.yaml`:
-
-```yaml
+```powershell
+@"
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -1235,10 +1190,7 @@ spec:
         - name: secret-volume
           secret:
             secretName: file-secret
-```
-
-```powershell
-kubectl apply -f secret-workload.yaml
+"@ | kubectl apply -f -
 ```
 
 ### Step 6.3 – Verify Secret Consumption
