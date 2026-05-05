@@ -9,6 +9,14 @@ This repository contains hands-on labs for learning about Azure Kubernetes Servi
    - Configuring cluster credentials
    - Basic cluster verification
 
+    1.1 **[Lab 1.1: AKS-Fundamentals](./lab1-1-AKS-Fundamentals.md)**
+   - Deployments** – Creating, updating, rolling back, and managing deployment strategies
+   - Services – Exposing workloads via ClusterIP, NodePort, and Internal LoadBalancer
+   - Blue/Green Deployments – Zero-downtime releases by switching traffic between versions
+   - Canary Deployments – Gradually rolling out a new version alongside the existing one
+   - ConfigMaps – Externalising configuration from your containers
+   - Secrets – Storing sensitive data securely
+
 2. **[Lab 2: CSI Driver and Dynamic Provisioning](./lab2-csi-dynamic-volumes.md)**
    - Working with CSI drivers
    - Creating storage classes
